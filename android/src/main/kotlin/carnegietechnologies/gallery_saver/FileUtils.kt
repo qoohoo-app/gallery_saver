@@ -326,20 +326,29 @@ internal object FileUtils {
         if (toDcim && android.os.Build.VERSION.SDK_INT < 29) {
             albumFolderPath += File.separator + Environment.DIRECTORY_DCIM;
         }
+
+        var baseFolderName = if (mediaType == MediaType.image)
+            Environment.DIRECTORY_PICTURES else
+            Environment.DIRECTORY_MOVIES
+
+        if (toDcim) {
+            baseFolderName = Environment.DIRECTORY_DCIM;
+        }
+
+        Log.e(TAG, baseFolderName)
+        
         albumFolderPath = if (TextUtils.isEmpty(folderName)) {
-            var baseFolderName = if (mediaType == MediaType.image)
-                Environment.DIRECTORY_PICTURES else
-                Environment.DIRECTORY_MOVIES
-            if (toDcim) {
-                baseFolderName = Environment.DIRECTORY_DCIM;
-            }
             createDirIfNotExist(
                 Environment.getExternalStoragePublicDirectory(baseFolderName).path
             ) ?: albumFolderPath
         } else {
-            createDirIfNotExist(albumFolderPath + File.separator + folderName)
+            createDirIfNotExist(
+                Environment.getExternalStoragePublicDirectory(baseFolderName).path+File.separator + folderName)
                 ?: albumFolderPath
         }
+
+        Log.e(TAG, albumFolderPath)
+
         return albumFolderPath
     }
 
